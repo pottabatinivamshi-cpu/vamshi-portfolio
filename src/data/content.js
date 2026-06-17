@@ -7,7 +7,7 @@ export const personal = {
   title: 'Video Editor, Motion Graphics Designer & Production Lead',
   tagline: 'Transforming Raw Footage Into Engaging Stories',
   shortDescription:
-    "I help creators, brands, and organizations increase engagement through professional video editing, motion graphics, and cinematic storytelling.",
+    "I'm a Video Editor and Motion Graphics Designer passionate about creating engaging content through creative editing, motion graphics, and visual storytelling.",
   email: 'pottabatinivamshi@gmail.com',
   whatsapp: 'https://wa.me/9372534404',
   // instagram: 'https://instagram.com/vamshi.edits',
@@ -24,10 +24,9 @@ export const navLinks = [
 ]
 
 export const aboutData = {
-  heading: "I turn footage into films, and moments into movements.",
+  heading: "I transform raw footage into engaging stories that capture attention and connect with audiences.",
   bio: [
-    "I'm a video editor and motion graphics designer with a passion for cinematic storytelling. Over the past few years, I've worked across YouTube content, social media reels, brand promos, and live event coverage — always with one goal: make people feel something in the first three seconds.",
-    "As a Content Production Lead, I don't just edit — I think in narratives, pacing, and audience retention. Whether it's a fast-cut Instagram reel or a slow cinematic brand film, every frame is intentional.",
+    "I'm a Video Editor and Motion Graphics Designer with a passion for cinematic storytelling. I create content for YouTube, Instagram, social media, and creative projects, focusing on engaging visuals and meaningful stories. My goal is to capture attention from the very first few seconds and create videos that leave a lasting impression.",
   ],
   roles: [
     'Video Editor',
@@ -167,8 +166,8 @@ export const portfolioProjects = [
     title: 'Animated Logo Sequence',
     category: 'Motion Graphics',
     description: 'Created a dynamic E-Cell logo animation in After Effects using smooth motion design and professional animation principles.',
-    thumbnail: 'https://img.youtube.com/vi/_EjCAGr4ViM/maxresdefault.jpg',
-    videoId: '_EjCAGr4ViM',
+    thumbnail: 'https://img.youtube.com/vi/zFxfct5OUmU/maxresdefault.jpg',
+    videoId: 'zFxfct5OUmU',
   },
   // {
   //   id: 9,
