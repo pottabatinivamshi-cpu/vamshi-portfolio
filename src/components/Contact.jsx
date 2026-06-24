@@ -1,8 +1,11 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Mail, MessageCircle, Instagram, Linkedin, Send, ArrowUpRight } from 'lucide-react'
+import { Mail, MessageCircle, Instagram, Linkedin, Send, ArrowUpRight, CheckCircle, AlertCircle, Loader } from 'lucide-react'
 import SectionHeading from './SectionHeading'
 import { personal } from '../data/content'
+
+// ✅ PASTE YOUR FORMSPREE ENDPOINT HERE
+const FORMSPREE_URL = 'https://formspree.io/f/mykqknzy'
 
 const contactLinks = [
   {
@@ -17,12 +20,12 @@ const contactLinks = [
     href: personal.whatsapp,
     icon: MessageCircle,
   },
-  // {
-  //   label: 'Instagram',
-  //   value: '@vamshi.edits',
-  //   href: personal.instagram,
-  //   icon: Instagram,
-  // },
+  {
+    label: 'Instagram',
+    value: '@vamshi.edits',
+    href: personal.instagram,
+    icon: Instagram,
+  },
   {
     label: 'LinkedIn',
     value: 'Vamshi Pottabatini',
@@ -33,19 +36,44 @@ const contactLinks = [
 
 export default function Contact() {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' })
-  const [submitted, setSubmitted] = useState(false)
+  const [status, setStatus] = useState('idle') // idle | loading | success | error
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Placeholder submit handler — wire this up to your backend / form service
-    setSubmitted(true)
-    setTimeout(() => setSubmitted(false), 4000)
-    setFormData({ name: '', email: '', message: '' })
+    setStatus('loading')
+
+    try {
+      const response = await fetch(FORMSPREE_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      if (response.ok) {
+        setStatus('success')
+        setFormData({ name: '', email: '', message: '' })
+        // Reset back to idle after 5 seconds
+        setTimeout(() => setStatus('idle'), 5000)
+      } else {
+        setStatus('error')
+        setTimeout(() => setStatus('idle'), 5000)
+      }
+    } catch (err) {
+      setStatus('error')
+      setTimeout(() => setStatus('idle'), 5000)
+    }
   }
+
+  const isLoading = status === 'loading'
+  const isSuccess = status === 'success'
+  const isError = status === 'error'
 
   return (
     <section id="contact" className="relative py-28 md:py-36 section-padding overflow-hidden">
@@ -77,10 +105,11 @@ export default function Contact() {
                 name="name"
                 type="text"
                 required
+                disabled={isLoading || isSuccess}
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="Your name"
-                className="bg-transparent border border-white/10 rounded-xl px-4 py-3 text-ink placeholder:text-white/30 focus:border-accent transition-colors duration-300"
+                className="bg-transparent border border-white/10 rounded-xl px-4 py-3 text-ink placeholder:text-white/30 focus:border-accent transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
             <div className="flex flex-col gap-2">
@@ -92,10 +121,11 @@ export default function Contact() {
                 name="email"
                 type="email"
                 required
+                disabled={isLoading || isSuccess}
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="you@example.com"
-                className="bg-transparent border border-white/10 rounded-xl px-4 py-3 text-ink placeholder:text-white/30 focus:border-accent transition-colors duration-300"
+                className="bg-transparent border border-white/10 rounded-xl px-4 py-3 text-ink placeholder:text-white/30 focus:border-accent transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
           </div>
@@ -109,21 +139,63 @@ export default function Contact() {
               name="message"
               required
               rows={5}
+              disabled={isLoading || isSuccess}
               value={formData.message}
               onChange={handleChange}
               placeholder="Tell me about your project..."
-              className="bg-transparent border border-white/10 rounded-xl px-4 py-3 text-ink placeholder:text-white/30 focus:border-accent transition-colors duration-300 resize-none"
+              className="bg-transparent border border-white/10 rounded-xl px-4 py-3 text-ink placeholder:text-white/30 focus:border-accent transition-colors duration-300 resize-none disabled:opacity-50 disabled:cursor-not-allowed"
             />
           </div>
 
+          {/* Success message */}
+          {isSuccess && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex items-center gap-3 px-4 py-3 rounded-xl bg-green-500/10 border border-green-500/30 text-green-400"
+            >
+              <CheckCircle size={18} />
+              <p className="text-sm font-display">Message sent! I'll get back to you soon.</p>
+            </motion.div>
+          )}
+
+          {/* Error message */}
+          {isError && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400"
+            >
+              <AlertCircle size={18} />
+              <p className="text-sm font-display">Something went wrong. Please try again or email me directly.</p>
+            </motion.div>
+          )}
+
           <motion.button
             type="submit"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="group inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-accent text-base font-display font-semibold uppercase tracking-wider text-sm transition-all duration-300 hover:shadow-[0_0_30px_#FF6B0060]"
+            disabled={isLoading || isSuccess}
+            whileHover={!isLoading && !isSuccess ? { scale: 1.02 } : {}}
+            whileTap={!isLoading && !isSuccess ? { scale: 0.98 } : {}}
+            className="group inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-accent text-base font-display font-semibold uppercase tracking-wider text-sm transition-all duration-300 hover:shadow-[0_0_30px_#FF6B0060] disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            {submitted ? 'Message Sent!' : 'Send Message'}
-            <Send size={16} className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
+            {isLoading && (
+              <>
+                <Loader size={16} className="animate-spin" />
+                Sending...
+              </>
+            )}
+            {isSuccess && (
+              <>
+                <CheckCircle size={16} />
+                Message Sent!
+              </>
+            )}
+            {(status === 'idle' || isError) && (
+              <>
+                Send Message
+                <Send size={16} className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
+              </>
+            )}
           </motion.button>
         </motion.form>
 
