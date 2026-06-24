@@ -20,12 +20,12 @@ const contactLinks = [
     href: personal.whatsapp,
     icon: MessageCircle,
   },
-  {
-    label: 'Instagram',
-    value: '@vamshi.edits',
-    href: personal.instagram,
-    icon: Instagram,
-  },
+  // {
+  //   label: 'Instagram',
+  //   value: '@vamshi.edits',
+  //   href: personal.instagram,
+  //   icon: Instagram,
+  // },
   {
     label: 'LinkedIn',
     value: 'Vamshi Pottabatini',
