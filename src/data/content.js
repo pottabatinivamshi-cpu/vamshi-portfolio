@@ -6,9 +6,9 @@ export const personal = {
   firstName: 'Vamshi',
   title: 'Video Editor, Motion Graphics Designer & Production Lead',
   tagline: 'Transforming Raw Footage Into Engaging Stories',
-  shortDescription:
-    "I'm a Video Editor and Motion Graphics Designer passionate about creating engaging content through creative editing, motion graphics, and visual storytelling.",
-  email: 'pottabatinivamshi@gmail.com',
+  // shortDescription:
+  //   "I'm a Video Editor and Motion Graphics Designer passionate about creating engaging content through creative editing, motion graphics, and visual storytelling.",
+  // email: 'pottabatinivamshi@gmail.com',
   whatsapp: 'https://wa.me/9372534404',
   // instagram: 'https://instagram.com/vamshi.edits',
   linkedin: 'https://www.linkedin.com/in/vamshi-pottabatini-472a51312',
@@ -24,9 +24,9 @@ export const navLinks = [
 ]
 
 export const aboutData = {
-  heading: "I transform raw footage into engaging stories that capture attention and connect with audiences.",
+  // heading: "I transform raw footage into engaging stories that capture attention and connect with audiences.",
   bio: [
-    "I'm a Video Editor and Motion Graphics Designer with a passion for cinematic storytelling. I create content for YouTube, Instagram, social media, and creative projects, focusing on engaging visuals and meaningful stories. My goal is to capture attention from the very first few seconds and create videos that leave a lasting impression.",
+    "I transform raw footage into engaging stories that capture attention and connect with audiences.",
   ],
   roles: [
     'Video Editor',
@@ -54,32 +54,28 @@ export const experienceData = [
     id: 1,
     role: 'HOD – Production',
     org: 'DJSCE E-Cell',
-    duration: '2025 – Present',
+    duration: '2025 – 2026',
     description:
       'Leading the Production Department for the Entrepreneurship Cell, overseeing all video content for flagship events and campaigns.',
     points: [
       'Leading the Production Department',
-      'Managing content production workflows',
       'Creating promotional and event videos',
-      'Coordinating with marketing and design teams',
       'Mentoring creative team members',
-      'Ensuring professional production quality',
     ],
   },
-  // {
-  //   id: 2,
-  //   role: 'Freelance Video Editor',
-  //   org: 'Independent / Multiple Clients',
-  //   duration: '2023 – 2025',
-  //   description:
-  //     'Worked with creators and small businesses to produce YouTube content, reels, and motion graphics packages tailored to brand identity.',
-  //   points: [
-  //     'Delivered 80+ edited videos across niches',
-  //     'Built repeatable editing templates for clients',
-  //     'Collaborated remotely with creators worldwide',
-  //     'Maintained consistent fast turnaround times',
-  //   ],
-  // },
+  {
+    id: 2,
+    role: 'VCP – Productions',
+    org: 'DJSCE E-Cell',
+    duration: '2026 – Present',
+    // description:
+      // 'Supporting the Productions team at DJSCE E-Cell by creating engaging video content for events, campaigns, and social media.',
+    points: [
+      'Managing content production workflows',
+      'Collaborating with creative and marketing teams',
+      'Maintaining consistent production quality',
+    ],
+  },
   // {
   //   id: 3,
   //   role: 'Motion Design Enthusiast',
@@ -101,7 +97,6 @@ export const portfolioCategories = [
   'Reels & Shorts',
   'Motion Graphics',
   'Event Highlights',
-  
 ]
 
 export const portfolioProjects = [
@@ -116,7 +111,7 @@ export const portfolioProjects = [
   {
     id: 2,
     title: 'Maahi Artist Reveal Video',
-    category: 'Reels',
+    category: 'Reels & Shorts',
     description: 'Produced a high-energy artist reveal featuring creative editing, motion graphics, and suspense-driven pacing to maximize audience excitement and engagement.',
     thumbnail: 'https://img.youtube.com/vi/CyhcqWhcYTY/maxresdefault.jpg',
     videoId: 'CyhcqWhcYTY',
@@ -140,7 +135,7 @@ export const portfolioProjects = [
   {
     id: 5,
     title: 'DJSCE ECELL TEAM REVEAL',
-    category: 'Hard Edits',
+    category: 'Reels & Shorts',
     description: 'Created an engaging team reveal edit with rapid-paced cuts, creative masking effects, smooth transitions, and color grading.',
     thumbnail: 'https://img.youtube.com/vi/pk3-_tdc0FU/maxresdefault.jpg',
     videoId: 'pk3-_tdc0FU',
@@ -148,7 +143,7 @@ export const portfolioProjects = [
   {
     id: 6,
     title: 'Rush Hour 5.0 Event Highlights Reel',
-    category: 'Reels',
+    category: 'Reels & Shorts',
     description: "Edited the Rush Hour 5.0 Event Highlights Reel, capturing the event's energy through dynamic pacing, seamless transitions, beat-synced cuts, and color grading.",
     thumbnail: 'https://img.youtube.com/vi/bK3cisJ6P0Q/maxresdefault.jpg',
     videoId: 'bK3cisJ6P0Q',
@@ -156,7 +151,7 @@ export const portfolioProjects = [
   {
     id: 7,
     title: 'Student Startup Promo Video',
-    category: 'YouTube Videos',
+    category: 'Reels & Shorts',
     description: 'Edited a startup trailer using transitions, text animations, and color grading to present the business idea in a clear and engaging way.',
     thumbnail: 'https://img.youtube.com/vi/V_pVwgQ0Ccc/maxresdefault.jpg',
     videoId: 'V_pVwgQ0Ccc',
@@ -200,11 +195,11 @@ export const servicesData = [
   //   description: 'Narrative-driven edits with film-like pacing, transitions, and emotional depth.',
   //   icon: 'Clapperboard',
   // },
-  {
-    title: 'Social Media Content Editing',
-    description: 'Platform-optimized content tailored to algorithms, formats, and audience behavior.',
-    icon: 'Share2',
-  },
+  // {
+  //   title: 'Social Media Content Editing',
+  //   description: 'Platform-optimized content tailored to algorithms, formats, and audience behavior.',
+  //   icon: 'Share2',
+  // },
   // {
   //   title: 'Color Correction & Grading',
   //   description: 'Professional color work to give your footage a polished, consistent, cinematic look.',

@@ -80,7 +80,7 @@ export default function About() {
         </div>
 
         {/* Right: Specializations */}
-        <div className="lg:col-span-5">
+        {/* <div className="lg:col-span-5">
           <motion.h3
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -104,6 +104,38 @@ export default function About() {
                 <div className="absolute left-0 top-0 h-full w-1 bg-accent scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top" />
                 <h4 className="font-display font-semibold text-ink mb-1">{spec.title}</h4>
                 <p className="text-sm text-muted">{spec.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div> */}
+        {/* Right: Software */}
+        <div className="lg:col-span-5">
+          <motion.h3
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="font-display text-xl font-semibold mb-6 text-ink"
+          >
+            Software I Work With
+          </motion.h3>
+          <div className="flex flex-col gap-3">
+            {[
+              { name: 'Adobe After Effects', icon: '✦' },
+              { name: 'DaVinci Resolve', icon: '◈' },
+            ].map((tool, i) => (
+              <motion.div
+                key={tool.name}
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                whileHover={{ x: 8 }}
+                className="group relative p-5 rounded-2xl glass overflow-hidden transition-colors duration-300 hover:border-accent/40 flex items-center gap-4"
+              >
+                <div className="absolute left-0 top-0 h-full w-1 bg-accent scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top" />
+                <span className="text-accent text-xl">{tool.icon}</span>
+                <h4 className="font-display font-semibold text-ink">{tool.name}</h4>
               </motion.div>
             ))}
           </div>

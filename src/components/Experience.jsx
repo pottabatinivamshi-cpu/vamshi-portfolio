@@ -68,7 +68,7 @@ export default function Experience() {
         eyebrow="Experience"
         title="My Journey So Far"
         align="center"
-        description="From self-taught beginnings to leading a production department — every project has shaped how I tell stories."
+        // description="From self-taught beginnings to leading a production department — every project has shaped how I tell stories."
       />
 
       <div className="mt-16 max-w-4xl mx-auto">
