@@ -1,307 +1,163 @@
-// import { motion } from 'framer-motion'
-// import { ArrowDown, ArrowRight, Play } from 'lucide-react'
-// import { personal } from '../data/content'
+import { useEffect, useRef, useState } from 'react'
+import { ArrowRight, Volume2 } from 'lucide-react'
+import { heroReel, personal } from '../data/content'
+import { scrollToId } from '../lib/timecode'
+import VideoModal from './VideoModal'
+import YouTubeLoop from './YouTubeLoop'
 
-// const container = {
-//   hidden: {},
-//   show: {
-//     transition: {
-//       staggerChildren: 0.12,
-//       delayChildren: 0.2,
-//     },
-//   },
-// }
+/** Plays the hero loop: a local MP4 if configured, otherwise loops YouTube cuts. */
+function ReelLoop() {
+  const [live, setLive] = useState(false)
+  const videoRef = useRef(null)
 
-// const item = {
-//   hidden: { opacity: 0, y: 40 },
-//   show: { opacity: 1, y: 0, transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] } },
-// }
+  // React doesn't server-render `muted`, so enforce it before starting playback
+  useEffect(() => {
+    const v = videoRef.current
+    if (!v) return
+    v.muted = true
+    v.play().catch(() => {})
+  }, [])
 
-// export default function Hero() {
-//   const scrollTo = (href) => {
-//     const el = document.querySelector(href)
-//     if (el) el.scrollIntoView({ behavior: 'smooth' })
-//   }
-
-//   return (
-//     <section
-//       id="home"
-//       className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-base"
-//     >
-//       {/* Background layers */}
-//       <div className="absolute inset-0 bg-radial-glow" />
-//       <div className="absolute inset-0 bg-grain opacity-30" />
-
-//       {/* Animated grid lines */}
-//       <div className="absolute inset-0 opacity-[0.07]">
-//         <div
-//           className="absolute inset-0"
-//           style={{
-//             backgroundImage:
-//               'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
-//             backgroundSize: '60px 60px',
-//           }}
-//         />
-//       </div>
-
-//       {/* Floating orbs */}
-//       <motion.div
-//         className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-accent/20 blur-[100px]"
-//         animate={{ y: [0, 40, 0], x: [0, 20, 0] }}
-//         transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-//       />
-//       <motion.div
-//         className="absolute bottom-1/4 -right-32 w-[28rem] h-[28rem] rounded-full bg-accent/10 blur-[120px]"
-//         animate={{ y: [0, -50, 0], x: [0, -30, 0] }}
-//         transition={{ duration: 13, repeat: Infinity, ease: 'easeInOut' }}
-//       />
-
-//       {/* Rotating ring decoration */}
-//       <motion.div
-//         className="hidden md:block absolute top-1/2 right-[8%] -translate-y-1/2 w-72 h-72 border border-accent/20 rounded-full"
-//         animate={{ rotate: 360 }}
-//         transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-//       >
-//         <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-accent shadow-[0_0_20px_#FF6B00]" />
-//       </motion.div>
-//       <motion.div
-//         className="hidden md:block absolute top-1/2 right-[8%] -translate-y-1/2 w-96 h-96 border border-white/5 rounded-full"
-//         animate={{ rotate: -360 }}
-//         transition={{ duration: 55, repeat: Infinity, ease: 'linear' }}
-//       />
-
-//       {/* Main content */}
-//       <motion.div
-//         className="relative z-10 section-padding w-full flex flex-col items-center text-center pt-28"
-//         variants={container}
-//         initial="hidden"
-//         animate="show"
-//       >
-//         <motion.div
-//           variants={item}
-//           className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8 font-display text-xs md:text-sm uppercase tracking-[0.2em] text-muted"
-//         >
-//           <span className="relative flex h-2 w-2">
-//             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75" />
-//             <span className="relative inline-flex rounded-full h-2 w-2 bg-accent" />
-//           </span>
-//           Available for Freelance Projects
-//         </motion.div>
-
-//         <motion.h1
-//           variants={item}
-//           className="font-display font-extrabold leading-[0.95] text-clamp-hero tracking-tight max-w-5xl"
-//         >
-//           <span className="block text-ink">Transforming Raw</span>
-//           <span className="block gradient-text">Footage Into</span>
-//           <span className="block text-ink">Engaging Stories</span>
-//         </motion.h1>
-
-//         <motion.p
-//           variants={item}
-//           className="mt-8 max-w-2xl text-base md:text-lg text-muted leading-relaxed"
-//         >
-//           {personal.shortDescription}
-//         </motion.p>
-
-//         <motion.div variants={item} className="mt-10 flex flex-col sm:flex-row items-center gap-4">
-//           <button
-//             onClick={() => scrollTo('#portfolio')}
-//             className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-full bg-accent text-base font-display font-semibold uppercase tracking-wider text-sm overflow-hidden transition-transform duration-300 hover:scale-105"
-//           >
-//             <span className="relative z-10 flex items-center gap-2">
-//               <Play size={16} className="fill-base" />
-//               View My Work
-//             </span>
-//           </button>
-//           <button
-//             onClick={() => scrollTo('#contact')}
-//             className="group inline-flex items-center gap-2 px-8 py-4 rounded-full border border-white/15 text-ink font-display font-semibold uppercase tracking-wider text-sm hover:border-accent hover:text-accent transition-all duration-300"
-//           >
-//             Contact Me
-//             <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
-//           </button>
-//         </motion.div>
-
-//         {/* Identity tag */}
-//         <motion.div
-//           variants={item}
-//           className="mt-16 flex flex-col items-center gap-1"
-//         >
-//           <p className="font-display text-sm md:text-base tracking-[0.3em] uppercase text-ink/70">
-//             {personal.name}
-//           </p>
-//           <p className="text-xs md:text-sm text-muted tracking-wider">{personal.title}</p>
-//         </motion.div>
-//       </motion.div>
-
-//       {/* Scroll indicator */}
-//       <motion.div
-//         className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted"
-//         initial={{ opacity: 0 }}
-//         animate={{ opacity: 1 }}
-//         transition={{ delay: 1.5, duration: 1 }}
-//       >
-//         <span className="text-[10px] uppercase tracking-[0.3em]">Scroll</span>
-//         <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 1.8, repeat: Infinity }}>
-//           <ArrowDown size={16} className="text-accent" />
-//         </motion.div>
-//       </motion.div>
-//     </section>
-//   )
-// }
-
-import { motion } from 'framer-motion'
-import { ArrowDown, ArrowRight, Play } from 'lucide-react'
-import { personal } from '../data/content'
-
-const container = {
-  hidden: {},
-  show: {
-    transition: {
-      staggerChildren: 0.12,
-      delayChildren: 0.2,
-    },
-  },
-}
-
-const item = {
-  hidden: { opacity: 0, y: 40 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] } },
-}
-
-export default function Hero() {
-  const scrollTo = (href) => {
-    const el = document.querySelector(href)
-    if (el) el.scrollIntoView({ behavior: 'smooth' })
+  if (heroReel.video) {
+    return (
+      <video
+        ref={videoRef}
+        className="absolute inset-0 h-full w-full object-cover"
+        src={heroReel.video}
+        poster={heroReel.poster}
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        aria-hidden="true"
+      />
+    )
   }
 
   return (
-    <section
-      id="home"
-      className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-base"
-    >
-      <div className="absolute inset-0 bg-radial-glow" />
-      <div className="absolute inset-0 bg-grain opacity-30" />
+    <>
+      <img src={heroReel.poster} alt="" className="absolute inset-0 h-full w-full object-cover" />
+      {/* 16:9 player, center-cut into the 4:3 tube */}
+      <YouTubeLoop cuts={heroReel.cuts} onLiveChange={setLive} overscan={heroReel.overscan} />
+      {/* "Tuning" static covers each cut until YouTube's overlay has faded */}
+      <div
+        className={`crt-static absolute inset-0 transition-opacity duration-300 ${live ? 'opacity-0' : 'opacity-100'}`}
+        aria-hidden="true"
+      />
+    </>
+  )
+}
 
-      {/* Grid lines */}
-      <div className="absolute inset-0 opacity-[0.07]">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
-            backgroundSize: '60px 60px',
-          }}
+export default function Hero() {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <section id="home" className="section-x relative flex min-h-[100svh] items-center overflow-hidden pb-16 pt-24">
+      {/* Night-street backdrop behind the TV: darkened toward the text, shadowed at the bottom, vignetted */}
+      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+        <img
+          src="/media/hero-bg.webp"
+          alt=""
+          width="564"
+          height="748"
+          className="absolute inset-0 h-full w-full object-cover opacity-70 lg:left-auto lg:w-[62%] lg:[mask-image:linear-gradient(to_right,transparent,#000_45%)]"
         />
+        <div className="absolute inset-0 bg-gradient-to-r from-night via-night/60 to-transparent lg:via-night/20" />
+        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-night via-night/80 to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_65%_45%,transparent_25%,rgba(8,8,8,0.85)_80%)]" />
       </div>
 
-      {/* Floating orbs */}
-      <motion.div
-        className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-accent/20 blur-[100px]"
-        animate={{ y: [0, 40, 0], x: [0, 20, 0] }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <motion.div
-        className="absolute bottom-1/4 -right-32 w-[28rem] h-[28rem] rounded-full bg-accent/10 blur-[120px]"
-        animate={{ y: [0, -50, 0], x: [0, -30, 0] }}
-        transition={{ duration: 13, repeat: Infinity, ease: 'easeInOut' }}
-      />
+      <div className="relative grid w-full items-center gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-6">
+        <div className="order-2 lg:order-1">
+          <p className="label reveal text-muted">Portfolio · {new Date().getFullYear()}</p>
 
-      {/* Rotating rings */}
-      <motion.div
-        className="hidden md:block absolute top-1/2 right-[8%] -translate-y-1/2 w-72 h-72 border border-accent/20 rounded-full"
-        animate={{ rotate: 360 }}
-        transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-      >
-        <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-accent shadow-[0_0_20px_#FF6B00]" />
-      </motion.div>
-      <motion.div
-        className="hidden md:block absolute top-1/2 right-[8%] -translate-y-1/2 w-96 h-96 border border-white/5 rounded-full"
-        animate={{ rotate: -360 }}
-        transition={{ duration: 55, repeat: Infinity, ease: 'linear' }}
-      />
-
-      {/* Content */}
-      <motion.div
-        className="relative z-10 section-padding w-full flex flex-col items-center text-center pt-28"
-        variants={container}
-        initial="hidden"
-        animate="show"
-      >
-        {/* Available badge */}
-        <motion.div
-          variants={item}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-10 font-display text-xs md:text-sm uppercase tracking-[0.2em] text-muted"
-        >
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-accent" />
-          </span>
-          Available for Freelance Projects
-        </motion.div>
-
-        {/* VAMSHI — bold Helvetica */}
-        <motion.div variants={item} className="w-full">
-          <h1
-            className="font-extrabold uppercase leading-none text-ink select-none"
-            style={{
-              fontFamily: '"Helvetica Neue", "Arial Black", Helvetica, Arial, sans-serif',
-              fontSize: 'clamp(4rem, 18vw, 14rem)',
-              letterSpacing: '-0.02em',
-            }}
-          >
-            Vamshi
+          <h1 className="reveal mt-5 font-display text-clamp-hero uppercase text-ink" style={{ '--d': '0.08s' }}>
+            {personal.firstName}
+            <span className="sr-only"> {personal.lastName}</span>
           </h1>
-        </motion.div>
 
-        {/* Title */}
-        <motion.p
-          variants={item}
-          className="mt-4 font-display text-xs md:text-sm uppercase tracking-[0.3em] text-muted"
-        >
-          {personal.title}
-        </motion.p>
+          <p className="label reveal mt-6 text-ink" style={{ '--d': '0.16s' }}>
+            {personal.roles.join('  |  ')}
+          </p>
+          <p className="label reveal mt-3 flex items-center gap-2 text-muted" style={{ '--d': '0.2s' }}>
+            <span className="h-1.5 w-1.5 rounded-full bg-wave" aria-hidden="true" />
+            Available for freelance · {personal.location}
+          </p>
 
-        {/* Description */}
-        <motion.p
-          variants={item}
-          className="mt-6 max-w-xl text-base md:text-lg text-muted/80 leading-relaxed"
-        >
-          {personal.shortDescription}
-        </motion.p>
+          <div className="reveal mt-10 grid w-full max-w-sm grid-cols-2 gap-3" style={{ '--d': '0.28s' }}>
+            <a
+              href="#work"
+              onClick={(e) => {
+                e.preventDefault()
+                scrollToId('work')
+              }}
+              className="label flex h-12 items-center justify-center rounded-full border border-accent bg-accent font-bold text-[#080808] transition-transform hover:scale-[1.03]"
+            >
+              See the work
+            </a>
+            <a
+              href="#contact"
+              onClick={(e) => {
+                e.preventDefault()
+                scrollToId('contact')
+              }}
+              className="label group flex h-12 items-center justify-center gap-2 rounded-full border border-line text-ink transition-colors hover:border-ink"
+            >
+              Let's talk
+              <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+            </a>
+          </div>
+        </div>
 
-        {/* CTA buttons */}
-        <motion.div variants={item} className="mt-10 flex flex-col sm:flex-row items-center gap-4">
-          <button
-            onClick={() => scrollTo('#portfolio')}
-            className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-full bg-accent text-base font-display font-semibold uppercase tracking-wider text-sm transition-transform duration-300 hover:scale-105"
-          >
-            <Play size={16} className="fill-base" />
-            View Portfolio
-          </button>
-          <button
-            onClick={() => scrollTo('#contact')}
-            className="group inline-flex items-center gap-2 px-8 py-4 rounded-full border border-white/15 text-ink font-display font-semibold uppercase tracking-wider text-sm hover:border-accent hover:text-accent transition-all duration-300"
-          >
-            Contact Me
-            <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
-          </button>
-        </motion.div>
-      </motion.div>
+        {/* Vintage TV playing the showreel */}
+        <div className="reveal order-1 lg:order-2" style={{ '--d': '0.1s' }}>
+          <div className="relative mx-auto aspect-[658/602] w-full max-w-[560px]">
+            {/* Grounding: the surface the TV sits on (stand base is at 97.8% of the image height) */}
+            <div className="pointer-events-none absolute inset-x-[-18%] top-[97.8%] h-[26%]" aria-hidden="true">
+              {/* Surface plane, catching the tube's teal spill and fading into the dark */}
+              <div className="tv-surface absolute inset-0" />
+              {/* Faint reflection of the set */}
+              <img src="/media/tv.webp" alt="" className="tv-reflection absolute left-[13.24%] top-[-8.5%] w-[73.53%]" />
+            </div>
+            {/* Ambient occlusion + tight contact shadow where the stand meets the surface */}
+            <div className="pointer-events-none absolute left-[-2%] right-[-2%] top-[90%] h-[16%] rounded-[50%] bg-[radial-gradient(closest-side,rgba(0,0,0,0.95),transparent)] blur-md" aria-hidden="true" />
+            <div className="pointer-events-none absolute left-[4%] right-[4%] top-[96.2%] h-[3.5%] rounded-[50%] bg-black/90 blur-[3px]" aria-hidden="true" />
+            {/* Showreel sits behind the set; the TV image has its glass cut out, so the real bezel masks it */}
+            <button
+              type="button"
+              onClick={() => setOpen(true)}
+              aria-label="Watch the showreel with sound"
+              className="crt-screen group absolute overflow-hidden bg-black"
+              style={{ left: '9.12%', top: '9.47%', width: '81.31%', height: '71.43%' }}
+            >
+              <ReelLoop />
+              <span className="crt-vignette pointer-events-none absolute inset-0" />
+              <span className="crt-glare pointer-events-none absolute inset-0" />
+              <span className="label absolute bottom-[10%] left-1/2 flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full bg-black/60 px-3 py-1.5 text-[10px] text-ink opacity-0 backdrop-blur transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+                <Volume2 size={12} /> Watch with sound
+              </span>
+            </button>
+            <img
+              src="/media/tv.webp"
+              width="658"
+              height="602"
+              fetchpriority="high"
+              alt="Vintage CRT television playing Vamshi Pottabatini's editing showreel"
+              className="tv-image pointer-events-none absolute inset-0 h-full w-full select-none"
+            />
+          </div>
+        </div>
+      </div>
 
-      {/* Scroll indicator */}
-      <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5, duration: 1 }}
-      >
-        <span className="text-[10px] uppercase tracking-[0.3em]">Scroll</span>
-        <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 1.8, repeat: Infinity }}>
-          <ArrowDown size={16} className="text-accent" />
-        </motion.div>
-      </motion.div>
+      {open && (
+        <VideoModal
+          src={heroReel.video || undefined}
+          videoId={heroReel.featured.videoId}
+          title={heroReel.video ? heroReel.title : heroReel.featured.title}
+          onClose={() => setOpen(false)}
+        />
+      )}
     </section>
   )
 }

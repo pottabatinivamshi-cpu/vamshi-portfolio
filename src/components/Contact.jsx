@@ -1,461 +1,179 @@
-// import { useState } from 'react'
-// import { motion } from 'framer-motion'
-// import { Mail, MessageCircle, Instagram, Linkedin, Send, ArrowUpRight, CheckCircle, AlertCircle, Loader } from 'lucide-react'
-// import SectionHeading from './SectionHeading'
-// import { personal } from '../data/content'
+import { useEffect, useRef, useState } from 'react'
+import { ArrowRight, ArrowUpRight, Check } from 'lucide-react'
+import { FORMSPREE_URL, personal, projectTypes } from '../data/content'
+import SectionHead from './SectionHead'
 
-// // ✅ PASTE YOUR FORMSPREE ENDPOINT HERE
-// const FORMSPREE_URL = 'https://formspree.io/f/mykqknzy'
+const empty = { name: '', email: '', projectType: projectTypes[0], message: '' }
 
-// const contactLinks = [
-//   {
-//     label: 'Email',
-//     value: personal.email,
-//     href: `mailto:${personal.email}`,
-//     icon: Mail,
-//   },
-//   {
-//     label: 'WhatsApp',
-//     value: 'Chat with me',
-//     href: personal.whatsapp,
-//     icon: MessageCircle,
-//   },
-//   // {
-//   //   label: 'Instagram',
-//   //   value: '@vamshi.edits',
-//   //   href: personal.instagram,
-//   //   icon: Instagram,
-//   // },
-//   {
-//     label: 'LinkedIn',
-//     value: 'Vamshi Pottabatini',
-//     href: personal.linkedin,
-//     icon: Linkedin,
-//   },
-// ]
+function Field({ label, children }) {
+  return (
+    <label className="grid gap-2 sm:grid-cols-[120px_1fr] sm:items-start sm:gap-4">
+      <span className="label pt-3 text-muted">{label}</span>
+      {children}
+    </label>
+  )
+}
 
-// export default function Contact() {
-//   const [formData, setFormData] = useState({ name: '', email: '', message: '' })
-//   const [status, setStatus] = useState('idle') // idle | loading | success | error
+const inputCls =
+  'w-full rounded-md border border-line bg-night px-3 py-2.5 text-ink placeholder:text-muted/60 transition-colors focus:border-accent focus:outline-none disabled:opacity-50'
 
-//   const handleChange = (e) => {
-//     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
-//   }
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault()
-//     setStatus('loading')
-
-//     try {
-//       const response = await fetch(FORMSPREE_URL, {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//           Accept: 'application/json',
-//         },
-//         body: JSON.stringify(formData),
-//       })
-
-//       if (response.ok) {
-//         setStatus('success')
-//         setFormData({ name: '', email: '', message: '' })
-//         // Reset back to idle after 5 seconds
-//         setTimeout(() => setStatus('idle'), 5000)
-//       } else {
-//         setStatus('error')
-//         setTimeout(() => setStatus('idle'), 5000)
-//       }
-//     } catch (err) {
-//       setStatus('error')
-//       setTimeout(() => setStatus('idle'), 5000)
-//     }
-//   }
-
-//   const isLoading = status === 'loading'
-//   const isSuccess = status === 'success'
-//   const isError = status === 'error'
-
-//   return (
-//     <section id="contact" className="relative py-28 md:py-36 section-padding overflow-hidden">
-//       <div className="absolute inset-0 bg-radial-glow opacity-30 pointer-events-none" />
-
-//       <SectionHeading
-//         eyebrow="Contact"
-//         title="Let's Create Together"
-//         description="Have a project in mind? Reach out and let's talk about how we can bring your vision to life."
-//       />
-
-//       <div className="mt-14 grid lg:grid-cols-12 gap-8">
-//         {/* Form */}
-//         <motion.form
-//           initial={{ opacity: 0, y: 30 }}
-//           whileInView={{ opacity: 1, y: 0 }}
-//           viewport={{ once: true }}
-//           transition={{ duration: 0.6 }}
-//           onSubmit={handleSubmit}
-//           className="lg:col-span-7 p-6 md:p-10 rounded-3xl glass flex flex-col gap-6"
-//         >
-//           <div className="grid md:grid-cols-2 gap-6">
-//             <div className="flex flex-col gap-2">
-//               <label htmlFor="name" className="text-sm font-display uppercase tracking-wider text-muted">
-//                 Name
-//               </label>
-//               <input
-//                 id="name"
-//                 name="name"
-//                 type="text"
-//                 required
-//                 disabled={isLoading || isSuccess}
-//                 value={formData.name}
-//                 onChange={handleChange}
-//                 placeholder="Your name"
-//                 className="bg-transparent border border-white/10 rounded-xl px-4 py-3 text-ink placeholder:text-white/30 focus:border-accent transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-//               />
-//             </div>
-//             <div className="flex flex-col gap-2">
-//               <label htmlFor="email" className="text-sm font-display uppercase tracking-wider text-muted">
-//                 Email
-//               </label>
-//               <input
-//                 id="email"
-//                 name="email"
-//                 type="email"
-//                 required
-//                 disabled={isLoading || isSuccess}
-//                 value={formData.email}
-//                 onChange={handleChange}
-//                 placeholder="you@example.com"
-//                 className="bg-transparent border border-white/10 rounded-xl px-4 py-3 text-ink placeholder:text-white/30 focus:border-accent transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-//               />
-//             </div>
-//           </div>
-
-//           <div className="flex flex-col gap-2">
-//             <label htmlFor="message" className="text-sm font-display uppercase tracking-wider text-muted">
-//               Message
-//             </label>
-//             <textarea
-//               id="message"
-//               name="message"
-//               required
-//               rows={5}
-//               disabled={isLoading || isSuccess}
-//               value={formData.message}
-//               onChange={handleChange}
-//               placeholder="Tell me about your project..."
-//               className="bg-transparent border border-white/10 rounded-xl px-4 py-3 text-ink placeholder:text-white/30 focus:border-accent transition-colors duration-300 resize-none disabled:opacity-50 disabled:cursor-not-allowed"
-//             />
-//           </div>
-
-//           {/* Success message */}
-//           {isSuccess && (
-//             <motion.div
-//               initial={{ opacity: 0, y: -10 }}
-//               animate={{ opacity: 1, y: 0 }}
-//               className="flex items-center gap-3 px-4 py-3 rounded-xl bg-green-500/10 border border-green-500/30 text-green-400"
-//             >
-//               <CheckCircle size={18} />
-//               <p className="text-sm font-display">Message sent! I'll get back to you soon.</p>
-//             </motion.div>
-//           )}
-
-//           {/* Error message */}
-//           {isError && (
-//             <motion.div
-//               initial={{ opacity: 0, y: -10 }}
-//               animate={{ opacity: 1, y: 0 }}
-//               className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400"
-//             >
-//               <AlertCircle size={18} />
-//               <p className="text-sm font-display">Something went wrong. Please try again or email me directly.</p>
-//             </motion.div>
-//           )}
-
-//           <motion.button
-//             type="submit"
-//             disabled={isLoading || isSuccess}
-//             whileHover={!isLoading && !isSuccess ? { scale: 1.02 } : {}}
-//             whileTap={!isLoading && !isSuccess ? { scale: 0.98 } : {}}
-//             className="group inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-accent text-base font-display font-semibold uppercase tracking-wider text-sm transition-all duration-300 hover:shadow-[0_0_30px_#FF6B0060] disabled:opacity-60 disabled:cursor-not-allowed"
-//           >
-//             {isLoading && (
-//               <>
-//                 <Loader size={16} className="animate-spin" />
-//                 Sending...
-//               </>
-//             )}
-//             {isSuccess && (
-//               <>
-//                 <CheckCircle size={16} />
-//                 Message Sent!
-//               </>
-//             )}
-//             {(status === 'idle' || isError) && (
-//               <>
-//                 Send Message
-//                 <Send size={16} className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
-//               </>
-//             )}
-//           </motion.button>
-//         </motion.form>
-
-//         {/* Contact links */}
-//         <div className="lg:col-span-5 flex flex-col gap-4">
-//           {contactLinks.map((link, i) => (
-//             <motion.a
-//               key={link.label}
-//               href={link.href}
-//               target="_blank"
-//               rel="noopener noreferrer"
-//               initial={{ opacity: 0, x: 30 }}
-//               whileInView={{ opacity: 1, x: 0 }}
-//               viewport={{ once: true }}
-//               transition={{ duration: 0.5, delay: i * 0.1 }}
-//               whileHover={{ x: 8 }}
-//               className="group flex items-center justify-between p-5 md:p-6 rounded-2xl glass hover:border-accent/40 transition-colors duration-300"
-//             >
-//               <div className="flex items-center gap-4">
-//                 <div className="w-12 h-12 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center group-hover:bg-accent transition-colors duration-300">
-//                   <link.icon size={20} className="text-accent group-hover:text-base transition-colors duration-300" />
-//                 </div>
-//                 <div>
-//                   <p className="text-xs uppercase tracking-wider text-muted">{link.label}</p>
-//                   <p className="font-display font-medium text-ink">{link.value}</p>
-//                 </div>
-//               </div>
-//               <ArrowUpRight size={18} className="text-muted group-hover:text-accent transition-colors duration-300" />
-//             </motion.a>
-//           ))}
-//         </div>
-//       </div>
-//     </section>
-//   )
-// }
-
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { Mail, MessageCircle, Linkedin, Send, CheckCircle, AlertCircle, Loader } from 'lucide-react'
-import SectionHeading from './SectionHeading'
-import { personal } from '../data/content'
-
-// ✅ PASTE YOUR FORMSPREE ENDPOINT HERE
-const FORMSPREE_URL = 'https://formspree.io/f/mykqknzy'
-
-const contactLinks = [
-  {
-    label: 'Email',
-    href: `mailto:${personal.email}`,
-    icon: Mail,
-    color: 'hover:bg-[#EA4335]/20 hover:border-[#EA4335]/40', // Gmail color brand hint
-  },
-  {
-    label: 'WhatsApp',
-    href: personal.whatsapp,
-    icon: MessageCircle,
-    color: 'hover:bg-[#25D366]/20 hover:border-[#25D366]/40', // WhatsApp color brand hint
-  },
-  {
-    label: 'LinkedIn',
-    href: personal.linkedin,
-    icon: Linkedin,
-    color: 'hover:bg-[#0077B5]/20 hover:border-[#0077B5]/40', // LinkedIn color brand hint
-  },
-]
-
+/** Contact form styled as an editor's export / render panel */
 export default function Contact() {
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' })
-  const [status, setStatus] = useState('idle') // idle | loading | success | error
+  const [form, setForm] = useState(empty)
+  const [status, setStatus] = useState('idle') // idle | rendering | done | error
+  const [progress, setProgress] = useState(0)
+  const timer = useRef(null)
 
-  const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+  useEffect(() => () => clearInterval(timer.current), [])
+
+  const update = (e) => {
+    setForm((f) => ({ ...f, [e.target.name]: e.target.value }))
+    if (status === 'done' || status === 'error') setStatus('idle')
   }
 
-  const handleSubmit = async (e) => {
+  const submit = async (e) => {
     e.preventDefault()
-    setStatus('loading')
-
+    setStatus('rendering')
+    setProgress(0)
+    // Ease toward 90% while the request is in flight
+    timer.current = setInterval(() => setProgress((p) => p + (90 - p) * 0.12), 80)
     try {
-      const response = await fetch(FORMSPREE_URL, {
+      const res = await fetch(FORMSPREE_URL, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify(formData),
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(form),
       })
-
-      if (response.ok) {
-        setStatus('success')
-        setFormData({ name: '', email: '', message: '' })
-        setTimeout(() => setStatus('idle'), 5000)
-      } else {
-        setStatus('error')
-        setTimeout(() => setStatus('idle'), 5000)
-      }
-    } catch (err) {
+      clearInterval(timer.current)
+      if (!res.ok) throw new Error(String(res.status))
+      setProgress(100)
+      setStatus('done')
+      setForm(empty)
+    } catch {
+      clearInterval(timer.current)
       setStatus('error')
-      setTimeout(() => setStatus('idle'), 5000)
     }
   }
 
-  const isLoading = status === 'loading'
-  const isSuccess = status === 'success'
-  const isError = status === 'error'
-
+  const busy = status === 'rendering'
   return (
-    <section id="contact" className="relative py-28 md:py-36 section-padding overflow-hidden">
-      <div className="absolute inset-0 bg-radial-glow opacity-30 pointer-events-none" />
+    <section id="contact" className="section-x relative py-24 md:py-32">
+      <SectionHead label="Contact" title="Export Your Project" note="Fill in the settings · hit render" />
 
-      <SectionHeading
-        eyebrow="Contact"
-        title="Let's Create Together"
-        description="Have a project in mind? Reach out and let's talk about how we can bring your vision to life."
-      />
-
-      <div className="mt-14 max-w-4xl mx-auto">
-        <motion.form
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          onSubmit={handleSubmit}
-          className="p-6 md:p-10 rounded-3xl glass flex flex-col gap-8"
-        >
-          {/* Reference Image Grid Layout (Socials Top Row) */}
-          <div className="grid grid-cols-3 gap-4 sm:gap-6 max-w-md mx-auto w-full mb-2">
-            {contactLinks.map((link, i) => (
-              <motion.a
-                key={link.label}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: i * 0.1 }}
-                whileHover={{ scale: 1.05, y: -4 }}
-                whileTap={{ scale: 0.95 }}
-                title={link.label}
-                className={`aspect-square rounded-2xl md:rounded-3xl glass flex flex-col items-center justify-center gap-2 border border-white/10 transition-all duration-300 shadow-md ${link.color}`}
-              >
-                <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-accent transition-colors duration-300">
-                  <link.icon size={24} className="text-white opacity-80" />
-                </div>
-                <span className="text-[10px] md:text-xs uppercase tracking-wider text-muted font-display font-medium">
-                  {link.label}
-                </span>
-              </motion.a>
-            ))}
+      <form
+        onSubmit={submit}
+        className="reveal mt-12 overflow-hidden rounded-xl border border-line bg-surface shadow-[0_40px_80px_rgba(0,0,0,0.5)]"
+      >
+        {/* Window chrome */}
+        <div className="flex items-center justify-between border-b border-line bg-surface2 px-4 py-2.5">
+          <div className="flex gap-1.5" aria-hidden="true">
+            <span className="h-2.5 w-2.5 rounded-full bg-wave shadow-[0_0_6px_rgba(74,222,128,0.6)]" />
+            <span className="h-2.5 w-2.5 rounded-full bg-wave shadow-[0_0_6px_rgba(74,222,128,0.6)]" />
+            <span className="h-2.5 w-2.5 rounded-full bg-wave shadow-[0_0_6px_rgba(74,222,128,0.6)]" />
           </div>
+          <p className="label text-[10px] text-muted">Export Settings</p>
+          <span className="w-10" />
+        </div>
 
-          <hr className="border-white/5 my-2" />
-
-          {/* Form Inputs */}
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="flex flex-col gap-2">
-              <label htmlFor="name" className="text-sm font-display uppercase tracking-wider text-muted">
-                Name
-              </label>
+        <div className="grid lg:grid-cols-[1.5fr_1fr]">
+          <fieldset disabled={busy} className="space-y-5 p-5 md:p-8">
+            <Field label="Format">
+              <select name="projectType" value={form.projectType} onChange={update} className={inputCls}>
+                {projectTypes.map((t) => (
+                  <option key={t}>{t}</option>
+                ))}
+              </select>
+            </Field>
+            <Field label="Your name">
+              <input name="name" required value={form.name} onChange={update} placeholder="Jane Doe" className={inputCls} autoComplete="name" />
+            </Field>
+            <Field label="Email">
               <input
-                id="name"
-                name="name"
-                type="text"
-                required
-                disabled={isLoading || isSuccess}
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Your name"
-                className="bg-transparent border border-white/10 rounded-xl px-4 py-3 text-ink placeholder:text-white/30 focus:border-accent transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label htmlFor="email" className="text-sm font-display uppercase tracking-wider text-muted">
-                Email
-              </label>
-              <input
-                id="email"
                 name="email"
                 type="email"
                 required
-                disabled={isLoading || isSuccess}
-                value={formData.email}
-                onChange={handleChange}
+                value={form.email}
+                onChange={update}
                 placeholder="you@example.com"
-                className="bg-transparent border border-white/10 rounded-xl px-4 py-3 text-ink placeholder:text-white/30 focus:border-accent transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                className={inputCls}
+                autoComplete="email"
+              />
+            </Field>
+            <Field label="Brief">
+              <textarea
+                name="message"
+                required
+                rows={5}
+                value={form.message}
+                onChange={update}
+                placeholder="Footage, length, deadline, references…"
+                className={`${inputCls} resize-none`}
+              />
+            </Field>
+          </fieldset>
+
+          {/* Direct links */}
+          <aside className="flex flex-col gap-6 border-t border-line bg-night/40 p-5 md:p-8 lg:border-l lg:border-t-0">
+            <div>
+              <p className="label text-muted">Or send directly</p>
+              <div className="mt-3 flex flex-col gap-2">
+                {[
+                  ['Email', `mailto:${personal.email}`, personal.email],
+                  ['WhatsApp', personal.whatsapp],
+                  ['LinkedIn', personal.linkedin],
+                ].map(([label, href, detail]) => (
+                  <a
+                    key={label}
+                    href={href}
+                    {...(href.startsWith('mailto:') ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
+                    className="group flex items-center justify-between gap-3 rounded-md border border-line px-3 py-2.5 text-sm text-ink transition-colors hover:border-accent hover:text-accent"
+                  >
+                    <span className="min-w-0">
+                      {label}
+                      {detail && <span className="block truncate font-mono text-[11px] text-muted">{detail}</span>}
+                    </span>
+                    <ArrowUpRight size={15} className="shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        {/* Render bar */}
+        <div className="flex flex-col gap-4 border-t border-line bg-surface2 px-5 py-4 md:flex-row md:items-center md:px-8">
+          <div className="flex-1">
+            <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
+              <div
+                className={`h-full rounded-full transition-[width] duration-200 ${status === 'error' ? 'bg-red-500' : status === 'done' ? 'bg-wave' : 'bg-accent'}`}
+                style={{ width: `${status === 'idle' ? 0 : status === 'error' ? 100 : progress}%` }}
               />
             </div>
+            <p className="label mt-2 text-[10px] text-muted" aria-live="polite">
+              {status === 'idle' && 'Ready to render'}
+              {status === 'rendering' && `Rendering… ${Math.round(progress)}%`}
+              {status === 'done' && "Render complete — I'll reply within 24 hours."}
+              {status === 'error' && `Render failed — try again, or email ${personal.email}.`}
+            </p>
           </div>
-
-          <div className="flex flex-col gap-2">
-            <label htmlFor="message" className="text-sm font-display uppercase tracking-wider text-muted">
-              Message
-            </label>
-            <textarea
-              id="message"
-              name="message"
-              required
-              rows={5}
-              disabled={isLoading || isSuccess}
-              value={formData.message}
-              onChange={handleChange}
-              placeholder="Tell me about your project..."
-              className="bg-transparent border border-white/10 rounded-xl px-4 py-3 text-ink placeholder:text-white/30 focus:border-accent transition-colors duration-300 resize-none disabled:opacity-50 disabled:cursor-not-allowed"
-            />
-          </div>
-
-          {/* Success message */}
-          {isSuccess && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl bg-green-500/10 border border-green-500/30 text-green-400"
-            >
-              <CheckCircle size={18} />
-              <p className="text-sm font-display">Message sent! I'll get back to you soon.</p>
-            </motion.div>
-          )}
-
-          {/* Error message */}
-          {isError && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400"
-            >
-              <AlertCircle size={18} />
-              <p className="text-sm font-display">Something went wrong. Please try again or email me directly.</p>
-            </motion.div>
-          )}
-
-          {/* Submit Button */}
-          <motion.button
+          <button
             type="submit"
-            disabled={isLoading || isSuccess}
-            whileHover={!isLoading && !isSuccess ? { scale: 1.02 } : {}}
-            whileTap={!isLoading && !isSuccess ? { scale: 0.98 } : {}}
-            className="group inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-accent text-base font-display font-semibold uppercase tracking-wider text-sm transition-all duration-300 hover:shadow-[0_0_30px_#FF6B0060] disabled:opacity-60 disabled:cursor-not-allowed w-full md:w-auto md:self-start"
+            disabled={busy}
+            className="label inline-flex items-center justify-center gap-2 rounded-md bg-accent px-8 py-3.5 font-medium text-[#080808] transition-transform hover:scale-[1.02] disabled:opacity-60"
           >
-            {isLoading && (
+            {status === 'done' ? (
               <>
-                <Loader size={16} className="animate-spin" />
-                Sending...
+                <Check size={15} /> Sent
+              </>
+            ) : busy ? (
+              'Rendering…'
+            ) : (
+              <>
+                Render <ArrowRight size={18} strokeWidth={2.5} />
               </>
             )}
-            {isSuccess && (
-              <>
-                <CheckCircle size={16} />
-                Message Sent!
-              </>
-            )}
-            {(status === 'idle' || isError) && (
-              <>
-                Send Message
-                <Send size={16} className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
-              </>
-            )}
-          </motion.button>
-        </motion.form>
-      </div>
+          </button>
+        </div>
+      </form>
     </section>
   )
 }

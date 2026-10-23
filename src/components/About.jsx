@@ -1,145 +1,67 @@
-import { motion } from 'framer-motion'
-import { Film, Sparkles, PenTool, Users } from 'lucide-react'
-import SectionHeading from './SectionHeading'
-import { aboutData } from '../data/content'
-import { useCountUp } from '../hooks/useCountUp'
+import { credits, personal, software, stats } from '../data/content'
+import SectionHead from './SectionHead'
 
-const roleIcons = {
-  'Video Editor': Film,
-  'Motion Graphics Designer': Sparkles,
-  'Creative Storyteller': PenTool,
-  'Content Production Lead': Users,
-}
+const tilts = [-2, 1.5, -1.2, 2]
 
-function StatCounter({ stat }) {
-  const { ref, count } = useCountUp(stat.value, 1800)
+/** A credit styled as a ticket; the years run down the tear-off stub */
+function Ticket({ credit, index }) {
   return (
-    <div ref={ref} className="flex flex-col items-center md:items-start">
-      <div className="font-display text-4xl md:text-5xl font-bold text-ink">
-        {count}
-        <span className="text-accent">{stat.suffix}</span>
+    <li className="reveal" style={{ '--d': `${index * 0.1}s` }}>
+      <div className="ticket-wrap" style={{ '--tilt': `${tilts[index % tilts.length]}deg` }}>
+        <article className="ticket">
+          <div className="ticket-main">
+            <p className="ticket-role">{credit.role}</p>
+            <p className="ticket-org">{credit.org}</p>
+          </div>
+          <div className="ticket-stub">
+            <span className="ticket-year">{credit.years}</span>
+          </div>
+        </article>
       </div>
-      <p className="mt-2 text-sm text-muted text-center md:text-left">{stat.label}</p>
-    </div>
+    </li>
   )
 }
 
 export default function About() {
   return (
-    <section id="about" className="relative py-28 md:py-36 section-padding overflow-hidden">
-      {/* Background accents */}
-      <div className="absolute top-0 right-0 w-1/2 h-full bg-radial-glow opacity-40 pointer-events-none" />
+    <section id="about" className="section-x relative py-24 md:py-32">
+      <SectionHead label="About" title="Behind the Cut" />
 
-      <SectionHeading
-        eyebrow="About Me"
-        title={aboutData.heading}
-      />
+      <p className="reveal mt-12 max-w-4xl text-2xl font-medium leading-snug text-ink md:text-4xl">
+        {personal.statement.split('engaging stories')[0]}
+        <span className="text-accent">engaging stories</span>
+        {personal.statement.split('engaging stories')[1]}
+      </p>
 
-      <div className="mt-14 grid lg:grid-cols-12 gap-12 items-start">
-        {/* Left: Bio + roles */}
-        <div className="lg:col-span-7">
-          {aboutData.bio.map((para, i) => (
-            <motion.p
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
-              className="text-muted text-base md:text-lg leading-relaxed mb-5"
-            >
-              {para}
-            </motion.p>
+      <div className="mt-16 grid gap-12 border-t border-line pt-12 md:grid-cols-2">
+        <div className="reveal flex gap-10">
+          {stats.map((s) => (
+            <div key={s.label}>
+              <p className="font-display text-5xl text-ink md:text-6xl">{s.value}</p>
+              <p className="label mt-2 text-muted">{s.label}</p>
+            </div>
           ))}
-
-          {/* Role tags */}
-          <div className="mt-8 flex flex-wrap gap-3">
-            {aboutData.roles.map((role, i) => {
-              const Icon = roleIcons[role] || Sparkles
-              return (
-                <motion.div
-                  key={role}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: i * 0.08 }}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-full glass text-sm font-display"
-                >
-                  <Icon size={16} className="text-accent" />
-                  {role}
-                </motion.div>
-              )
-            })}
-          </div>
-
-          {/* Stats */}
-          <div className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-8 pt-10 border-t border-white/10">
-            {aboutData.stats.map((stat) => (
-              <StatCounter key={stat.label} stat={stat} />
-            ))}
-          </div>
         </div>
 
-        {/* Right: Specializations */}
-        {/* <div className="lg:col-span-5">
-          <motion.h3
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="font-display text-xl font-semibold mb-6 text-ink"
-          >
-            Specializations
-          </motion.h3>
-          <div className="flex flex-col gap-3">
-            {aboutData.specializations.map((spec, i) => (
-              <motion.div
-                key={spec.title}
-                initial={{ opacity: 0, x: 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.08 }}
-                whileHover={{ x: 8 }}
-                className="group relative p-5 rounded-2xl glass overflow-hidden transition-colors duration-300 hover:border-accent/40"
-              >
-                <div className="absolute left-0 top-0 h-full w-1 bg-accent scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top" />
-                <h4 className="font-display font-semibold text-ink mb-1">{spec.title}</h4>
-                <p className="text-sm text-muted">{spec.desc}</p>
-              </motion.div>
+        <div className="reveal" style={{ '--d': '0.08s' }}>
+          <h3 className="label text-muted">Software</h3>
+          <ul className="mt-4 space-y-2">
+            {software.map((name) => (
+              <li key={name} className="text-lg text-ink">
+                {name}
+              </li>
             ))}
-          </div>
-        </div> */}
-        {/* Right: Software */}
-        <div className="lg:col-span-5">
-          <motion.h3
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="font-display text-xl font-semibold mb-6 text-ink"
-          >
-            Software I Work With
-          </motion.h3>
-          <div className="flex flex-col gap-3">
-            {[
-              { name: 'Adobe After Effects', icon: '✦' },
-              { name: 'DaVinci Resolve', icon: '◈' },
-            ].map((tool, i) => (
-              <motion.div
-                key={tool.name}
-                initial={{ opacity: 0, x: 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                whileHover={{ x: 8 }}
-                className="group relative p-5 rounded-2xl glass overflow-hidden transition-colors duration-300 hover:border-accent/40 flex items-center gap-4"
-              >
-                <div className="absolute left-0 top-0 h-full w-1 bg-accent scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top" />
-                <span className="text-accent text-xl">{tool.icon}</span>
-                <h4 className="font-display font-semibold text-ink">{tool.name}</h4>
-              </motion.div>
-            ))}
-          </div>
+          </ul>
         </div>
+      </div>
+
+      <div className="mt-16">
+        <h3 className="label reveal text-muted">Credits</h3>
+        <ul className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-10">
+          {credits.map((c, i) => (
+            <Ticket key={c.role} credit={c} index={i} />
+          ))}
+        </ul>
       </div>
     </section>
   )

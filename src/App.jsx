@@ -1,50 +1,29 @@
-import { useState } from 'react'
-import LoadingScreen from './components/LoadingScreen'
-import ScrollProgress from './components/ScrollProgress'
-import Navbar from './components/Navbar'
+import Header from './components/Header'
 import Hero from './components/Hero'
-import About from './components/About'
-import Portfolio from './components/Portfolio'
+import Work from './components/Work'
 import Services from './components/Services'
-// import Tools from './components/Tools'
-import Experience from './components/Experience'
-// import WhyWorkWithMe from './components/WhyWorkWithMe'
-// import Testimonials from './components/Testimonials'
+import About from './components/About'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
+import Timeline from './components/Timeline'
+import { useReveal } from './hooks/useReveal'
 
 export default function App() {
-  const [isLoading, setIsLoading] = useState(true)
+  useReveal()
 
   return (
     <>
-      {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
-
-      {!isLoading && (
-        <div className="relative bg-base text-ink antialiased">
-          {/* Fixed UI chrome */}
-          <ScrollProgress />
-          <Navbar />
-
-          {/* Page sections */}
-          <main>
-            <Hero />
-            <About />
-            <Portfolio />
-            <Services />
-            {/* <Tools /> */}
-            <Experience />
-            {/* <WhyWorkWithMe /> */}
-            {/* <Testimonials /> */}
-            <Contact />
-          </main>
-
-          <Footer />
-
-          {/* Subtle global noise overlay for cinematic texture */}
-          <div className="noise-overlay bg-grain" aria-hidden="true" />
-        </div>
-      )}
+      <Header />
+      <main>
+        <Hero />
+        <Work />
+        <Services />
+        <About />
+        <Contact />
+      </main>
+      <Footer />
+      <Timeline />
+      <div className="grain" aria-hidden="true" />
     </>
   )
 }

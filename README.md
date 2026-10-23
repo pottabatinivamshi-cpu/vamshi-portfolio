@@ -25,61 +25,28 @@ npm run build
 npm run preview
 ```
 
-## Project Structure
+## How it works
 
-```
-vamshi-portfolio/
-├── index.html
-├── package.json
-├── vite.config.js
-├── tailwind.config.js
-├── postcss.config.js
-├── eslint.config.js
-├── public/
-│   └── favicon.svg
-└── src/
-    ├── main.jsx
-    ├── App.jsx
-    ├── index.css
-    ├── data/
-    │   └── content.js        # All editable text, links, project data
-    ├── hooks/
-    │   ├── useScrollProgress.js
-    │   └── useCountUp.js
-    └── components/
-        ├── LoadingScreen.jsx
-        ├── ScrollProgress.jsx
-        ├── Navbar.jsx
-        ├── Hero.jsx
-        ├── SectionHeading.jsx
-        ├── About.jsx
-        ├── Portfolio.jsx
-        ├── Services.jsx
-        ├── Tools.jsx
-        ├── Experience.jsx
-        ├── WhyWorkWithMe.jsx
-        ├── Testimonials.jsx
-        ├── Contact.jsx
-        └── Footer.jsx
-```
+- **Content** lives in `src/data/content.js` (projects, services, credits, links, section timecodes).
+- **Timeline** — the bar at the bottom is the scroll progress: a playhead moves across one clip per
+  section. Drag it to scrub, click a clip to jump. Section timecodes are set in `sections`.
+- **Hero showreel** — plays inside the vintage TV (`public/media/tv.webp`). For the cleanest loop, export
+  an 8–10s muted MP4 of your best cuts to `public/media/showreel.mp4` and set `heroReel.video` to
+  `'/media/showreel.mp4'`. Otherwise it loops a YouTube segment set in `heroReel.cuts`.
+  A quick way to make the file (H.264, no audio, web-optimized):
+  `ffmpeg -i reel.mov -t 10 -an -vf scale=1280:-2 -c:v libx264 -crf 26 -preset slow -movflags +faststart public/media/showreel.mp4`
+- **Work tiles** autoplay muted while on screen and open with sound on click. For smooth playback,
+  give each project a short self-hosted preview instead of streaming from YouTube: export 6–10s of
+  the edit (H.264, 720p, no audio, ~1–2 MB) to `public/media/previews/` and set `preview` on the
+  project in `content.js`, e.g. `preview: '/media/previews/esummit.mp4'`. With ffmpeg:
+  `ffmpeg -ss 5 -i edit.mp4 -t 8 -an -vf scale=-2:720 -c:v libx264 -crf 28 -preset slow -movflags +faststart public/media/previews/esummit.mp4`
 
-## Customization
+## SEO
 
-- **All text content, links, projects, services, testimonials**: edit `src/data/content.js`.
-- **Colors / theme**: edit `tailwind.config.js` (`colors.accent`, `colors.base`, etc.) and `src/index.css`.
-- **Portfolio thumbnails**: replace the Unsplash placeholder URLs in `content.js` with your real video thumbnails. To embed actual video clips, swap the `<img>` in `Portfolio.jsx` for a `<video>` element or a modal/lightbox player.
-- **Contact form**: `Contact.jsx` currently has a placeholder submit handler. Connect it to a service like Formspree, EmailJS, or your own backend endpoint.
+`npm run build` prerenders the page to static HTML (`scripts/prerender.mjs`), so search engines see
+the full content without running JavaScript. `index.html` holds the title, description, canonical URL,
+Open Graph tags and JSON-LD (Person / WebSite / ProfilePage). `public/robots.txt` and
+`public/sitemap.xml` point at the production URL — update them if the domain changes.
 
-## Features
-
-- Cinematic curtain-wipe loading screen
-- Sticky glassmorphism navbar with active-section highlighting + mobile menu
-- Full-screen animated hero with parallax orbs and rotating rings
-- Animated stat counters
-- Filterable portfolio grid with smooth layout animations
-- Premium service cards, tools showcase, "why work with me" grid
-- Animated vertical timeline for experience
-- Auto-playing testimonial slider
-- Contact section with form + social links
-- Scroll progress indicator
-- Fully responsive, SEO meta tags included
+After deploying, add the site to [Google Search Console](https://search.google.com/search-console),
+submit `sitemap.xml`, and request indexing.
