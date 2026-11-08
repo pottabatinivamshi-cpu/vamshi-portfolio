@@ -121,6 +121,8 @@ function Clip({ project, index, onOpen, grow }) {
   const [mounted, setMounted] = useState(false)
   const [live, setLive] = useState(false)
   const cuts = useMemo(() => [{ videoId: project.videoId }], [project.videoId])
+  // Prefer the self-hosted full-frame poster; YouTube's hqdefault is 4:3 with baked-in black bars
+  const poster = project.poster || thumb(project.videoId, project.vertical ? 'oar2' : 'maxresdefault')
 
   // Once a player exists, keep it: scrolling away pauses it instead of destroying it
   useEffect(() => {
@@ -145,17 +147,18 @@ function Clip({ project, index, onOpen, grow }) {
           style={{ aspectRatio: project.vertical ? '9 / 16' : '16 / 9' }}
         >
           {project.preview ? (
-            <PreviewVideo src={project.preview} poster={thumb(project.videoId)} active={inView} onLive={setLive} />
+            <PreviewVideo src={project.preview} poster={poster} active={inView} onLive={setLive} />
           ) : (
             mounted && <YouTubeLoop cuts={cuts} onLiveChange={setLive} overscan={1.3} active={inView} />
           )}
           {/* Thumbnail covers the player until playback is clean */}
           <img
-            src={thumb(project.videoId)}
+            src={poster}
             alt={`${project.title} — ${project.category} edit by Vamshi Pottabatini`}
             loading="lazy"
-            width="480"
-            height="360"
+            decoding="async"
+            width={project.vertical ? 540 : 960}
+            height={project.vertical ? 960 : 540}
             className={`absolute inset-0 h-full w-full object-cover transition-all duration-700 group-hover:scale-[1.03] ${
               live ? 'opacity-0' : 'opacity-100'
             }`}

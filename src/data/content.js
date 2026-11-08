@@ -39,14 +39,15 @@ export const heroReel = {
   video: '/media/showreel-elusive-time.mp4',
   poster: '/media/showreel-elusive-time-poster.webp',
   title: 'Showreel 2026',
-  cuts: [{ videoId: 'pk3-_tdc0FU', start: 1, end: 15 }],
+  cuts: [{ videoId: 'bg1ZEt19cNE', start: 2, end: 14 }],
   // How far the YouTube player is zoomed past the screen; raise it for widescreen (letterboxed) videos
   overscan: 1.8,
   // YouTube video opened with sound when the TV is clicked (fallback mode only)
-  featured: { videoId: 'pk3-_tdc0FU', title: 'DJSCE E-Cell Team Reveal' },
+  featured: { videoId: 'bg1ZEt19cNE', title: 'DJSCE E-Cell Core Reveal 2026-27' },
 }
 
 // `vertical: true` marks 9:16 edits so the grid can size them correctly.
+// `poster`: a sharp, full-frame still in public/media/posters/ shown before the clip plays.
 // `preview` (optional): a short muted MP4 in public/media/previews/ that plays as you scroll.
 // Self-hosted previews play smoothly; without one, the tile streams from YouTube (heavier, laggier).
 // Click always opens the full YouTube video with sound.
@@ -58,6 +59,7 @@ export const projects = [
     description:
       "Edited Viram Shah's podcast intro with seamless transitions, motion graphics, and clean visual effects to create a captivating and professional start to the episode.",
     videoId: 'oiwF8YpoXxA',
+    poster: '/media/posters/viram-shah.webp',
   },
   {
     id: 2,
@@ -66,6 +68,7 @@ export const projects = [
     description:
       'Produced a high-energy artist reveal featuring creative editing, motion graphics, and suspense-driven pacing to maximize audience excitement and engagement.',
     videoId: 'CyhcqWhcYTY',
+    poster: '/media/posters/maahi.webp',
     vertical: true,
   },
   {
@@ -75,15 +78,18 @@ export const projects = [
     description:
       'Captured key moments, speaker sessions, networking interactions, and audience engagement through dynamic editing and cinematic storytelling.',
     videoId: 'i7236sNfWbY',
+    poster: '/media/posters/esummit.webp',
     vertical: true,
   },
   {
     id: 4,
-    title: 'DJSCE E-Cell Team Reveal',
-    category: 'Reels & Shorts',
+    title: 'DJSCE E-Cell Core Reveal 2026-27',
+    category: 'Team Reveal',
     description:
-      'An engaging team reveal edit with rapid-paced cuts, creative masking effects, smooth transitions, and color grading.',
-    videoId: 'pk3-_tdc0FU',
+      'Introduced the 2026-27 E-Cell core team with name-card reveals, fast location-hopping cuts, and a punchy logo finish.',
+    videoId: 'bg1ZEt19cNE',
+    poster: '/media/posters/core-reveal.webp',
+    preview: '/media/previews/core-reveal.mp4',
   },
   {
     id: 5,
@@ -92,6 +98,7 @@ export const projects = [
     description:
       "Captured the event's energy through dynamic pacing, seamless transitions, beat-synced cuts, and color grading.",
     videoId: 'bK3cisJ6P0Q',
+    poster: '/media/posters/rush-hour.webp',
     vertical: true,
   },
   {
@@ -101,14 +108,18 @@ export const projects = [
     description:
       'A startup trailer using transitions, text animations, and color grading to present the business idea in a clear and engaging way.',
     videoId: 'V_pVwgQ0Ccc',
+    poster: '/media/posters/startup-promo.webp',
+    vertical: true,
   },
   {
     id: 7,
-    title: 'Animated Logo Sequence',
-    category: 'Motion Graphics',
+    title: 'Startup Expo Teaser',
+    category: 'Teaser',
     description:
-      'A dynamic E-Cell logo animation built in After Effects using smooth motion design and professional animation principles.',
-    videoId: 'zFxfct5OUmU',
+      "Teaser for Startup Expo '26: a recap of E-Cell's past events flowing into kinetic typography and a retro-computer reveal of the date.",
+    videoId: 'A651GSp_8T0',
+    poster: '/media/posters/startup-expo.webp',
+    preview: '/media/previews/startup-expo.mp4',
   },
 ]
 
